@@ -38,7 +38,7 @@ namespace NycJobFilings.Data.Services
         /// <param name="initialBatchSize">Size of the initial batch</param>
         /// <param name="subsequentBatchSize">Size of subsequent batches</param>
         /// <returns>Channel to read loaded data from</returns>
-        public async Task<(ChannelReader<IEnumerable<JobFiling>> DataChannel, string LoadingId)> StartProgressiveLoadingAsync(
+        public Task<(ChannelReader<IEnumerable<JobFiling>> DataChannel, string LoadingId)> StartProgressiveLoadingAsync(
             string? loadingId = null,
             System.Linq.Expressions.Expression<Func<JobFiling, bool>>? filter = null,
             IEnumerable<string>? visibleColumns = null,
@@ -71,7 +71,7 @@ namespace NycJobFilings.Data.Services
             _loadingStates[loadingId] = loadingState;
 
             // Start the loading task
-            _ = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 try
                 {
@@ -139,7 +139,7 @@ namespace NycJobFilings.Data.Services
                 }
             });
 
-            return (channel.Reader, loadingId);
+            return Task.FromResult((channel.Reader, loadingId));
         }
 
         /// <summary>

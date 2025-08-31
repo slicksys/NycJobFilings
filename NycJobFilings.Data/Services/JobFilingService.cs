@@ -61,7 +61,7 @@ namespace NycJobFilings.Data.Services
             int batchSize = 5000,
             Expression<Func<JobFiling, bool>>? filter = null,
             IEnumerable<string>? visibleColumns = null,
-            CancellationToken cancellationToken = default)
+            [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             IQueryable<JobFiling> query = _context.JobFilings;
 

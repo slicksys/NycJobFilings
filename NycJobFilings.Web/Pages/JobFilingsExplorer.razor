@@ -226,13 +226,13 @@
         });
         
         // Reload data with the new filter
-        LoadDataAsync();
+        _ = LoadDataAsync();
     }
 
     private void RemoveFilter(FilterCondition filter)
     {
         ActiveFilters.Remove(filter);
-        LoadDataAsync();
+        _ = LoadDataAsync();
     }
 
     private void ShowColumnChooser()

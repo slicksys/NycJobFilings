@@ -1,0 +1,87 @@
+@page "/saved-filters"
+@using NycJobFilings.Data.Services
+@inject FilterService FilterService
+@inject NavigationManager NavigationManager
+
+<h1>Saved Filters</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Your Saved Filters</h5>
+            </div>
+            <div class="card-body">
+                @if (FilterSets == null)
+                {
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                }
+                else if (!FilterSets.Any())
+                {
+                    <div class="alert alert-info">
+                        <p>You don't have any saved filters yet.</p>
+                        <p>Go to the <a href="job-filings">Job Filings Explorer</a> to create filters and save them.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var filterSet in FilterSets)
+                        {
+                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">@filterSet.Name</h5>
+                                    <p class="mb-1">
+                                        @string.Join(", ", filterSet.Conditions.Select(c => c.DisplayText))
+                                    </p>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => ApplyFilter(filterSet)">Apply</button>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteFilter(filterSet)">Delete</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<FilterSet>? FilterSets { get; set; }
+    private const string DemoUserId = "demo-user";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSavedFilters();
+    }
+
+    private async Task LoadSavedFilters()
+    {
+        // Load saved filters for demo user
+        FilterSets = await FilterService.GetSavedFilterSetsAsync(DemoUserId);
+    }
+
+    private void ApplyFilter(FilterSet filterSet)
+    {
+        // In a real application, this would navigate to the job filings page with the filter applied
+        // This could be done via query parameters or state management
+        NavigationManager.NavigateTo("job-filings");
+    }
+
+    private async Task DeleteFilter(FilterSet filterSet)
+    {
+        if (filterSet.Id == null) return;
+
+        // Delete the filter set
+        await FilterService.DeleteFilterSetAsync(DemoUserId, filterSet.Id);
+        
+        // Reload the list
+        await LoadSavedFilters();
+    }
+}

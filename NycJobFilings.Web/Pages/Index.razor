@@ -1,0 +1,79 @@
+﻿@page "/"
+
+<PageTitle>NYC DOB Job Filings Explorer</PageTitle>
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">NYC DOB Job Application Filings Explorer</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">
+            Explore NYC Department of Buildings job application filings with dynamic columns, smart filters, and progressive loading.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="job-filings" class="btn btn-primary btn-lg px-4 gap-3">Explore Job Filings</a>
+            <a href="column-preferences" class="btn btn-outline-secondary btn-lg px-4">Customize Columns</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Dynamic Columns</h5>
+            </div>
+            <div class="card-body">
+                <p>Configure which columns to display, their order, and save your preferences. Customization is fully metadata-driven.</p>
+                <ul>
+                    <li>Show/hide columns</li>
+                    <li>Reorder columns</li>
+                    <li>Pin important columns</li>
+                    <li>Saved per user</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Smart Filter Chips</h5>
+            </div>
+            <div class="card-body">
+                <p>Create and combine filters to narrow your search. Filter chips apply to both data grid and chart visualizations.</p>
+                <ul>
+                    <li>Filter by date, borough, job type</li>
+                    <li>Numeric comparisons</li>
+                    <li>Save filter combinations</li>
+                    <li>Apply to grid and charts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-dark">
+                <h5 class="mb-0">Progressive Loading</h5>
+            </div>
+            <div class="card-body">
+                <p>Handle large result sets efficiently with background loading and progress tracking.</p>
+                <ul>
+                    <li>First 1,000 rows load immediately</li>
+                    <li>Background loading of more data</li>
+                    <li>Progress indicator</li>
+                    <li>Cancellable operations</li>
+                    <li>Optimized column loading</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <h4>Dataset Information</h4>
+    <p>This application uses the <strong>NYC DOB Job Application Filings</strong> dataset from NYC Open Data.</p>
+    <p>The dataset contains approximately 2.7 million records of job filings submitted to the Department of Buildings since 2000.</p>
+    <a href="https://data.cityofnewyork.us/Housing-Development/DOB-Job-Application-Filings/ic3t-wcy2/about_data" target="_blank" class="btn btn-sm btn-outline-info">
+        Learn More About the Dataset
+    </a>
+</div>

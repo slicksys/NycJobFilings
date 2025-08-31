@@ -1,0 +1,16 @@
+@namespace NycJobFilings.Web.Shared
+
+<div class="@AlertClass alert alert-dismissible fade show" role="alert">
+    @ChildContent
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public string Type { get; set; } = "info";
+    
+    private string AlertClass => $"alert-{Type}";
+}

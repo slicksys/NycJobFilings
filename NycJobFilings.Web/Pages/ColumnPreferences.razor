@@ -1,0 +1,117 @@
+@page "/column-preferences"
+@using NycJobFilings.Data.Services
+@inject ColumnMetadataService ColumnMetadataService
+
+<h1>Column Preferences</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Customize Columns</h5>
+                <button class="btn btn-primary" @onclick="SavePreferences">Save Preferences</button>
+            </div>
+            <div class="card-body">
+                @if (Columns == null)
+                {
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Visible</th>
+                                    <th>Display Order</th>
+                                    <th>Field Name</th>
+                                    <th>Display Name</th>
+                                    <th>Data Type</th>
+                                    <th>Pinned</th>
+                                    <th>Width</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var column in Columns.OrderBy(c => c.DisplayOrder))
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" @bind="column.Visible" />
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm" @bind="column.DisplayOrder" min="0" style="width: 70px;" />
+                                        </td>
+                                        <td>@column.FieldName</td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" @bind="column.DisplayName" />
+                                        </td>
+                                        <td>@column.DataType</td>
+                                        <td>
+                                            <input type="checkbox" @bind="column.Pinned" />
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm" @bind="column.Width" min="50" style="width: 70px;" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            <h5>Instructions:</h5>
+            <ul>
+                <li><strong>Visible</strong>: Check to show the column in the grid</li>
+                <li><strong>Display Order</strong>: Determines the order of columns (lower numbers first)</li>
+                <li><strong>Display Name</strong>: The column header text</li>
+                <li><strong>Pinned</strong>: Check to pin the column (will stay visible when scrolling horizontally)</li>
+                <li><strong>Width</strong>: Set the column width in pixels</li>
+            </ul>
+            <p>Your preferences will be saved per user and applied to all views of the Job Filings Explorer.</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ColumnMetadata>? Columns { get; set; }
+    private const string DemoUserId = "demo-user";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load column metadata
+        Columns = await ColumnMetadataService.GetColumnMetadataAsync(DemoUserId);
+    }
+
+    private async Task SavePreferences()
+    {
+        if (Columns == null) return;
+
+        // Convert to user preferences
+        var preferences = Columns.Select(c => new UserColumnPreference
+        {
+            UserId = DemoUserId,
+            FieldName = c.FieldName,
+            Visible = c.Visible,
+            DisplayOrder = c.DisplayOrder,
+            Pinned = c.Pinned,
+            Width = c.Width
+        }).ToList();
+
+        // Save preferences
+        await ColumnMetadataService.SaveUserPreferencesAsync(DemoUserId, preferences);
+
+        // Show success message (in a real app, this would use a toast notification)
+        await Task.Delay(100); // Simulate a short delay for saving
+    }
+}

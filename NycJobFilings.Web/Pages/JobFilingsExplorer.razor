@@ -1,0 +1,268 @@
+@page "/job-filings"
+@using NycJobFilings.Data.Models
+@using NycJobFilings.Data.Services
+@using System.Threading
+@inject JobFilingService JobFilingService
+@inject ColumnMetadataService ColumnMetadataService
+@inject FilterService FilterService
+@inject ProgressiveLoadingService ProgressiveLoadingService
+
+<h1>NYC DOB Job Filings Explorer</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var filter in ActiveFilters)
+                    {
+                        <div class="filter-chip">
+                            <span>@filter.DisplayText</span>
+                            <button type="button" class="btn-close" aria-label="Remove filter" @onclick="() => RemoveFilter(filter)"></button>
+                        </div>
+                    }
+                    <div class="filter-chip add-filter" @onclick="AddNewFilter">
+                        <span>+ Add Filter</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Job Filings</h5>
+                <div class="d-flex gap-2">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ShowColumnChooser">
+                            <span class="oi oi-list" aria-hidden="true"></span> Columns
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="SaveCurrentFilterSet">
+                            <span class="oi oi-bookmark" aria-hidden="true"></span> Save Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (IsLoading)
+                {
+                    <div class="loading-container">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: @ProgressPercentage%" aria-valuenow="@ProgressPercentage" aria-valuemin="0" aria-valuemax="100">
+                                @(LoadingState?.LoadedRecords ?? 0) / @(LoadingState?.TotalRecords ?? 0)
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-danger mt-2" @onclick="CancelLoading">Cancel</button>
+                    </div>
+                }
+                else if (JobFilings == null || !JobFilings.Any())
+                {
+                    <div class="alert alert-info">No job filings found. Try adjusting your filters.</div>
+                }
+                else
+                {
+                    <div class="table-container">
+                        <!-- This would be replaced by DevExpress DxGrid in a real implementation -->
+                        <table class="table table-striped table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    @foreach (var column in VisibleColumns)
+                                    {
+                                        <th title="@column.Description">@column.DisplayName</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var filing in JobFilings.Take(100)) // Limiting display for demo
+                                {
+                                    <tr>
+                                        @foreach (var column in VisibleColumns)
+                                        {
+                                            <td>@GetPropertyValue(filing, column.FieldName)</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (JobFilings.Count() > 100)
+                        {
+                            <div class="text-center text-muted">
+                                Showing 100 of @JobFilings.Count() records. Use filters to narrow results.
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filing Trends</h5>
+            </div>
+            <div class="card-body">
+                <!-- This would be replaced by a DevExpress chart in a real implementation -->
+                <div class="chart-placeholder">
+                    <p>Chart would be displayed here showing trends based on the current filters.</p>
+                    <p>For example: Job filings by month, borough distribution, or job status breakdown.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal dialogs for filters, column chooser, etc. would go here -->
+
+@code {
+    private List<JobFiling> JobFilings { get; set; } = new();
+    private List<ColumnMetadata> AllColumns { get; set; } = new();
+    private List<ColumnMetadata> VisibleColumns => AllColumns.Where(c => c.Visible).OrderBy(c => c.DisplayOrder).ToList();
+    private List<FilterCondition> ActiveFilters { get; set; } = new();
+    private string? LoadingId { get; set; }
+    private ProgressiveLoadingState? LoadingState { get; set; }
+    private bool IsLoading => LoadingState != null && !LoadingState.IsCompleted && !LoadingState.IsCancelled;
+    private int ProgressPercentage => LoadingState?.TotalRecords > 0 
+        ? (int)Math.Min(100, Math.Round((double)LoadingState.LoadedRecords / LoadingState.TotalRecords * 100))
+        : 0;
+    
+    // Timer for updating progress
+    private Timer? _progressTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load column metadata
+        AllColumns = await ColumnMetadataService.GetColumnMetadataAsync("demo-user");
+        
+        // Set default filter for the last 12 months (as per requirements)
+        ActiveFilters.Add(new FilterCondition
+        {
+            FieldName = "LatestActionDate",
+            Operator = ">=",
+            Value = DateTime.Now.AddMonths(-12),
+            DisplayText = "Latest Action Date ≥ 1 year ago"
+        });
+
+        // Start data loading
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            // Clear existing data
+            JobFilings.Clear();
+            
+            // Build filter expression
+            var filterExpression = FilterService.BuildFilterExpression(ActiveFilters);
+            
+            // Get visible column names for optimization
+            var visibleColumnNames = VisibleColumns.Select(c => c.FieldName).ToList();
+            
+            // Start progressive loading
+            var (channel, loadingId) = await ProgressiveLoadingService.StartProgressiveLoadingAsync(
+                filter: filterExpression,
+                visibleColumns: visibleColumnNames);
+            
+            LoadingId = loadingId;
+            
+            // Start a timer to update the loading state periodically
+            _progressTimer = new Timer(_ =>
+            {
+                LoadingState = ProgressiveLoadingService.GetLoadingState(loadingId);
+                InvokeAsync(StateHasChanged);
+            }, null, 0, 500);
+            
+            // Read data from the channel
+            await foreach (var batch in channel.ReadAllAsync())
+            {
+                JobFilings.AddRange(batch);
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle errors
+            Console.Error.WriteLine($"Error loading data: {ex.Message}");
+        }
+        finally
+        {
+            // Clean up the timer
+            _progressTimer?.Dispose();
+            _progressTimer = null;
+            
+            // Ensure UI is updated
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void CancelLoading()
+    {
+        if (LoadingId != null)
+        {
+            ProgressiveLoadingService.CancelLoading(LoadingId);
+        }
+    }
+
+    private void AddNewFilter()
+    {
+        // In a real implementation, this would show a dialog to add a new filter
+        // For demo purposes, just add a sample filter
+        ActiveFilters.Add(new FilterCondition
+        {
+            FieldName = "Borough",
+            Operator = "=",
+            Value = "MANHATTAN",
+            DisplayText = "Borough = MANHATTAN"
+        });
+        
+        // Reload data with the new filter
+        LoadDataAsync();
+    }
+
+    private void RemoveFilter(FilterCondition filter)
+    {
+        ActiveFilters.Remove(filter);
+        LoadDataAsync();
+    }
+
+    private void ShowColumnChooser()
+    {
+        // In a real implementation, this would show a column chooser dialog
+    }
+
+    private void SaveCurrentFilterSet()
+    {
+        // In a real implementation, this would show a dialog to name and save the filter set
+    }
+
+    private object? GetPropertyValue(JobFiling filing, string propertyName)
+    {
+        // Use reflection to get property value
+        var property = typeof(JobFiling).GetProperty(propertyName);
+        if (property == null) return null;
+        
+        var value = property.GetValue(filing);
+        
+        // Format based on data type
+        if (value is DateTime dateValue)
+        {
+            return dateValue.ToString("MM/dd/yyyy");
+        }
+        else if (value is decimal decimalValue)
+        {
+            return decimalValue.ToString("C2");
+        }
+        
+        return value;
+    }
+}

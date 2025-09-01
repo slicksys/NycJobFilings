@@ -1,6 +1,6 @@
 @page "/column-preferences"
 @using NycJobFilings.Data.Services
-@inject ColumnMetadataService ColumnMetadataService
+@using NycJobFilings.Data.Models
 
 <h1>Column Preferences</h1>
 
@@ -83,35 +83,4 @@
     </div>
 </div>
 
-@code {
-    private List<ColumnMetadata>? Columns { get; set; }
-    private const string DemoUserId = "demo-user";
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Load column metadata
-        Columns = await ColumnMetadataService.GetColumnMetadataAsync(DemoUserId);
-    }
-
-    private async Task SavePreferences()
-    {
-        if (Columns == null) return;
-
-        // Convert to user preferences
-        var preferences = Columns.Select(c => new UserColumnPreference
-        {
-            UserId = DemoUserId,
-            FieldName = c.FieldName,
-            Visible = c.Visible,
-            DisplayOrder = c.DisplayOrder,
-            Pinned = c.Pinned,
-            Width = c.Width
-        }).ToList();
-
-        // Save preferences
-        await ColumnMetadataService.SaveUserPreferencesAsync(DemoUserId, preferences);
-
-        // Show success message (in a real app, this would use a toast notification)
-        await Task.Delay(100); // Simulate a short delay for saving
-    }
-}

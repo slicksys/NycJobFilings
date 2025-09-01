@@ -187,7 +187,7 @@ namespace NycJobFilings.Data.Services
     {
         public static IServiceCollection AddProgressiveLoadingService(this IServiceCollection services)
         {
-            services.AddSingleton<ProgressiveLoadingService>();
+            services.AddScoped<ProgressiveLoadingService>();
             return services;
         }
     }

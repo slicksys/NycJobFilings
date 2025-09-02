@@ -23,8 +23,8 @@ builder.Services.AddColumnMetadataService(builder.Configuration);
 builder.Services.AddFilterService(builder.Configuration);
 builder.Services.AddProgressiveLoadingService();
 
-// DevExpress services would go here
-// builder.Services.AddDevExpressBlazor();
+// Add DevExpress Blazor services
+builder.Services.AddDevExpressBlazor(configure => configure.SizeMode = DevExpress.Blazor.SizeMode.Medium);
 
 // For development/demo, keep the sample weather service
 builder.Services.AddSingleton<WeatherForecastService>();

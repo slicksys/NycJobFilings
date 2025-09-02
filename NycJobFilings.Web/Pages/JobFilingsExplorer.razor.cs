@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using NycJobFilings.Data.Models;
 using NycJobFilings.Data.Services;
+using DevExpress.Blazor;
 
 namespace NycJobFilings.Web.Pages
 {
@@ -29,9 +30,18 @@ namespace NycJobFilings.Web.Pages
 
         private Timer? _progressTimer;
 
+        // Properties for UI components
+        protected bool IsColumnChooserVisible { get; set; }
+        protected bool IsSaveFilterDialogVisible { get; set; }
+        protected string FilterSetName { get; set; } = "";
+        protected IList<ColumnMetadata> SelectedColumns { get; set; } = new List<ColumnMetadata>();
+
         protected override async Task OnInitializedAsync()
         {
             AllColumns = await ColumnMetadataService.GetColumnMetadataAsync("demo-user");
+            
+            // Initialize selected columns
+            SelectedColumns = AllColumns.Where(c => c.Visible).ToList();
 
             ActiveFilters.Add(new FilterCondition
             {
@@ -112,12 +122,68 @@ namespace NycJobFilings.Web.Pages
 
         protected void ShowColumnChooser()
         {
-            // Placeholder for column chooser dialog
+            // Set currently visible columns as selected
+            SelectedColumns = AllColumns.Where(c => c.Visible).ToList();
+            IsColumnChooserVisible = true;
         }
 
         protected void SaveCurrentFilterSet()
         {
-            // Placeholder for save filter set dialog
+            FilterSetName = $"My Filter {DateTime.Now.ToString("yyyy-MM-dd HH:mm")}";
+            IsSaveFilterDialogVisible = true;
+        }
+
+        protected void OnSelectedColumnsChanged(IEnumerable<ColumnMetadata> selectedColumns)
+        {
+            // This method is called when selection changes in the column chooser
+        }
+
+        protected async Task SaveColumnPreferences()
+        {
+            // Update visibility based on selection
+            foreach (var column in AllColumns)
+            {
+                column.Visible = SelectedColumns.Any(c => c.FieldName == column.FieldName);
+            }
+
+            // Save user preferences
+            await ColumnMetadataService.SaveUserPreferencesAsync("demo-user", 
+                AllColumns.Select(c => new UserColumnPreference
+                {
+                    UserId = "demo-user",
+                    FieldName = c.FieldName,
+                    Visible = c.Visible,
+                    DisplayOrder = c.DisplayOrder,
+                    Pinned = c.Pinned,
+                    Width = c.Width
+                }).ToList());
+
+            // Close the dialog
+            IsColumnChooserVisible = false;
+
+            // Refresh the data
+            StateHasChanged();
+        }
+
+        protected async Task SaveFilterSetToStorage()
+        {
+            if (string.IsNullOrWhiteSpace(FilterSetName))
+            {
+                return;
+            }
+
+            // Create and save the filter set
+            var filterSet = new FilterSet
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = FilterSetName,
+                Conditions = ActiveFilters
+            };
+
+            await FilterService.SaveFilterSetAsync("demo-user", filterSet);
+
+            // Close the dialog
+            IsSaveFilterDialogVisible = false;
         }
 
         protected object? GetPropertyValue(JobFiling filing, string propertyName)

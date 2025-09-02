@@ -169,8 +169,8 @@ namespace NycJobFilings.Data.Services
             // Handle null values in the database
             if (Nullable.GetUnderlyingType(propertyType) != null)
             {
-                var hasValueProperty = Expression.Property(property, "HasValue");
-                var notNull = Expression.IsTrue(hasValueProperty);
+                var nullConstant = Expression.Constant(null, propertyType);
+                var notNull = Expression.NotEqual(property, nullConstant);
                 return Expression.AndAlso(notNull, comparison);
             }
 

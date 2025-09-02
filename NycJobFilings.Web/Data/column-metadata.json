@@ -215,18 +215,18 @@
      "Format": "MM/dd/yyyy",
      "Width": 150
    },
-//  {
-//    "FieldName": "ApprovedDate",
-//    "DisplayName": "Approved Date",
-//    "Description": "Date of approval",
-//    "Visible": true,
-//    "DisplayOrder": 19,
-//    "Pinned": false,
-//    "DataType": "datetime",
-//    "IsFilterable": true,
-//    "Format": "MM/dd/yyyy",
-//    "Width": 150
-//  },
+  {
+    "FieldName": "ApprovedDate",
+    "DisplayName": "Approved Date",
+    "Description": "Date of approval",
+    "Visible": true,
+    "DisplayOrder": 19,
+    "Pinned": false,
+    "DataType": "datetime",
+    "IsFilterable": true,
+    "Format": "MM/dd/yyyy",
+    "Width": 150
+  },
   {
     "FieldName": "FullyPaid",
     "DisplayName": "Fully Paid Date",

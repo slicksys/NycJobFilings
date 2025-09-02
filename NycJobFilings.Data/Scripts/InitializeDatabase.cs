@@ -12,7 +12,6 @@ namespace NycJobFilings.Data.Scripts
     {
         public static async Task RunAsync(string[] args)
         {
-            // Create a host to provide services for the database initialization
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((context, services) =>
                 {
@@ -22,15 +21,11 @@ namespace NycJobFilings.Data.Scripts
                             context.Configuration.GetConnectionString("DefaultConnection") 
                             ?? "Server=(localdb)\\mssqllocaldb;Database=NycJobFilings;Trusted_Connection=True;MultipleActiveResultSets=true"));
                     
-                    // Add HttpClient for API access
                     services.AddHttpClient();
-                    
-                    // Add the data importer
                     services.AddTransient<DataImporter>();
                 })
                 .Build();
 
-            // Get the required services
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             var logger = services.GetRequiredService<ILogger<InitializeDatabaseScript>>();
@@ -38,15 +33,9 @@ namespace NycJobFilings.Data.Scripts
             try
             {
                 logger.LogInformation("Initializing database");
-                
-                // Get the database context and ensure it's created
                 var dbContext = services.GetRequiredService<JobFilingsDbContext>();
                 dbContext.Database.EnsureCreated();
-                
-                // Get the data importer
                 var importer = services.GetRequiredService<DataImporter>();
-                
-                // Check command-line arguments
                 if (args.Length > 0)
                 {
                     switch (args[0].ToLower())
@@ -75,9 +64,7 @@ namespace NycJobFilings.Data.Scripts
                             break;
                             
                         case "test":
-                            // Generate test data
                             var count = args.Length > 1 && int.TryParse(args[1], out var c) ? c : 10000;
-                            
                             logger.LogInformation("Generating {Count} test records", count);
                             await importer.GenerateTestDataAsync(count);
                             break;
@@ -89,7 +76,6 @@ namespace NycJobFilings.Data.Scripts
                 }
                 else
                 {
-                    // No arguments, generate test data
                     logger.LogInformation("No command specified, generating 10,000 test records");
                     await importer.GenerateTestDataAsync(10000);
                 }

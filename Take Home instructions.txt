@@ -1,0 +1,98 @@
+Round -2 Take Take-Home (1 Week): Blazor +
+DevExpress — DOB Jobs Data Explorer
+
+1. Scenario:
+---------------------------------------------------
+
+Build a Blazor Server mini -application that lets users explore NYC DOB Job Application Filings Filingswith:
+• Dynamic, metadata metadata-driven columns + saved user preferences
+• Smart filter chips that drive both a DevExpress DxGrid and a
+chart
+• Progressive/background loading for large result sets with
+cancel + progress
+
+
+2. Scope: Pick One Pillar to Implement Deeply:
+---------------------------------------------------
+Option A — Dynamic Columns & Preferences
+• Load columns from metadata (JSON/DB); column chooser to show/hide, reorder, pin ; persist
+preferences per user; header tooltips.
+
+Option B — Filter Chips + Chart
+• Add/remove chips for fields like latest_action_date , borough, job_type type, job_status status, initial_cost cost≥, proposed_dwelling_units units≥; apply to grid and one chart; save/reload filter
+
+Option C — Background/Progressive Loading
+• Show first ~1,000 rows immediately, then stream batches (e.g., 5,000); progress indicator + Cancel;
+
+keep UI responsive; trim SELECTs to visible columns. Use a subset (e.g., last 12
+12–24 months) to reach ≥100k rows. If you cut scope, note what and why in the README, plus “next steps.
+
+
+3. Dataset
+---------------------------------------------------
+
+a. NYC Open Data — DOB Job
+
+Application Filings
+About: https://data.cityofnewyork.us/Housing Housing-Development/DOB DOB-Job -ApplicationApplication-Filings/ic3t ic3t-wcy2/about_data
+API: https://dev.socrata.com/foundry/data.c
+ityofnewyork.us/ic3t ic3t-wcy2
+• Rows: ~2.7M | Columns: ~96 | Row
+  Identifier: JOB_S1_NO
+• Includes filings since 2000; DOB NOW
+  submissions are in a separate dataset.
+• CSV export or Socrata API ( SoQL ) are both
+  fine.
+
+b. Environment (free)
+---------------------------------------------------
+Visual Studio Community
+Community+ DevExpress Blazor (trial) trial)+ SQL
+Server Express (SQLite acceptable if
+needed).
+
+c. Minimum Data Modeling
+---------------------------------------------------
+Use JOB_S1_NO as the primary
+key.
+• Sensible types ( datetime2, decimal decimal, NVARCHAR).
+• Helpful indexes ( e.g.,
+latest_action_date , borough,
+(job_type , job_status ), initial_cost cost).
+
+4. What We’ll Evaluate (Scoring)
+---------------------------------------------------
+• Primary pillar (deep implementation) implementation)– 50 pts
+• Light stubs for the other two pillars pillars– 15 pts total
+• Performance & correctness correctness– 15 pts (responsive UI; efficient
+• Code quality & structure structure– 10 pts (separation of concerns, async
+• UX polish & basic docs docs– 10 pts (clear loading/empty/error states; concise README)
+
+Bonus (up to +10): e.g., DB
+DB-backed prefs , saved filter sets, tiny Azure deploy, or an App Insights
+metric
+
+5. Timeline
+---------------------------------------------------
+• Allotted time: 1 week from receipt
+• Target effort: effort:~6–10 hours (OK to leave TODOs; document
+  If anything is unclear, feel free to ask during the week. We can
+  clarify requirements but won’t troubleshoot local environments.
+  Please come prepared with:
+• A runnable local app using a DOB dataset slice (≥100k rows),
+• A 1-page architecture/trade -offs slide slide(or short README),
+• Willingness to screen -share code codeand make a small change
+
+
+
+
+
+
+
+
+
+
+
+
+
+

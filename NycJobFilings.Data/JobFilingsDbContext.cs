@@ -13,12 +13,9 @@ namespace NycJobFilings.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure the JobFiling entity
             modelBuilder.Entity<JobFiling>(entity =>
             {
                 entity.ToTable("JobFilings");
-
-                // Set up indexes based on the requirements
                 entity.HasIndex(e => e.LatestActionDate);
                 entity.HasIndex(e => e.Borough);
                 entity.HasIndex(e => new { e.JobType, e.JobStatus });

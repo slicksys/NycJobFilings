@@ -4,115 +4,158 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NycJobFilings.Data.Models
 {
-    /// <summary>
-    /// Represents a DOB Job Application Filing from NYC Open Data
-    /// </summary>
-    public class JobFiling
+    public partial class JobFiling
     {
-        /// <summary>
-        /// Primary key - Job S1 Number
-        /// </summary>
         [Key]
         [Column("JOB_S1_NO")]
-        public string JobS1No { get; set; } = default!;
+        public int JobS1No { get; set; }
 
-        [Column("BOROUGH")]
+        [Column("Job Description")]
+        [StringLength(255)]
+        public string? JobDescription { get; set; }
+
+        [Column("Job #")]
+        public double? Job { get; set; }
+
+        [Column("Doc #")]
+        public double? Doc { get; set; }
+
+        [StringLength(255)]
         public string? Borough { get; set; }
 
-        [Column("HOUSE_NO")]
+        [Column("House #")]
+        [StringLength(255)]
         public string? HouseNo { get; set; }
 
-        [Column("STREET_NAME")]
+        [Column("Street Name")]
+        [StringLength(255)]
         public string? StreetName { get; set; }
 
-        [Column("BLOCK")]
-        public string? Block { get; set; }
+        public double? Block { get; set; }
 
-        [Column("LOT")]
-        public string? Lot { get; set; }
+        public double? Lot { get; set; }
 
-        [Column("ZIP_CODE")]
-        public string? ZipCode { get; set; }
+        [Column("City ")]
+        [StringLength(255)]
+        public string? City { get; set; }
 
-        [Column("BLDG_TYPE")]
+        [StringLength(255)]
+        public string? State { get; set; }
+
+        [StringLength(255)]
+        public string? Zip { get; set; }
+
+        [Column("Building Type")]
+        [StringLength(255)]
         public string? BuildingType { get; set; }
-
-        [Column("JOB_TYPE")]
+        [Column("Job Type")]
+        [StringLength(255)]
         public string? JobType { get; set; }
 
-        [Column("JOB_STATUS")]
+        [Column("Job Status")]
+        [StringLength(255)]
         public string? JobStatus { get; set; }
 
-        [Column("JOB_STATUS_DESCRP")]
-        public string? JobStatusDescription { get; set; }
 
-        [Column("LATEST_ACTION_DATE")]
+        [Column("Job Status Descrp")]
+        [StringLength(255)]
+        public string? JobStatusDescrp { get; set; }
+
+        [Column("Latest Action Date", TypeName = "datetime")]
         public DateTime? LatestActionDate { get; set; }
 
-        [Column("FILING_DATE")]
-        public DateTime? FilingDate { get; set; }
+        [Column("Pre- Filing Date", TypeName = "datetime")]
+        public DateTime? PreFilingDate { get; set; }
 
-        [Column("APPROVED_DATE")]
-        public DateTime? ApprovedDate { get; set; }
 
-        [Column("FULLY_PAID")]
-        public string? FullyPaid { get; set; }
+        //[Column("Filing Date", TypeName = "datetime")]
+        //public DateTime? FilingDate { get; set; }
 
-        [Column("INITIAL_COST", TypeName = "decimal(18,2)")]
+
+       // [Column(TypeName = "datetime")]
+       // public DateTime? ApprovedDate { get; set; }
+//
+
+        [Column("Fully Paid", TypeName = "datetime")]
+        public DateTime? FullyPaid { get; set; }
+
+
+        [Column("Initial Cost", TypeName = "money")]
         public decimal? InitialCost { get; set; }
 
-        [Column("TOTAL_EST_FEE", TypeName = "decimal(18,2)")]
-        public decimal? TotalEstimatedFee { get; set; }
 
-        [Column("FEE_STATUS")]
+        [Column("Total Est# Fee", TypeName = "money")]
+        public decimal? TotalEstFee { get; set; }
+
+        [Column("Fee Status")]
+        [StringLength(255)]
         public string? FeeStatus { get; set; }
 
-        [Column("EXISTING_DWELLING_UNITS")]
-        public int? ExistingDwellingUnits { get; set; }
+        [Column("Existing Dwelling Units")]
+        [StringLength(255)]
+        public string? ExistingDwellingUnits { get; set; }
 
-        [Column("PROPOSED_DWELLING_UNITS")]
-        public int? ProposedDwellingUnits { get; set; }
+        [Column("Proposed Dwelling Units")]
+        public double? ProposedDwellingUnits { get; set; }
 
-        [Column("EXISTING_OCCUPANCY")]
+        [Column("Existing Occupancy")]
+        [StringLength(255)]
         public string? ExistingOccupancy { get; set; }
 
-        [Column("PROPOSED_OCCUPANCY")]
+        [Column("Proposed Occupancy")]
+        [StringLength(255)]
         public string? ProposedOccupancy { get; set; }
 
-        [Column("EXISTING_STORIES")]
-        public int? ExistingStories { get; set; }
+        [Column("ExistingNo# of Stories")]
+        public double? ExistingNoOfStories { get; set; }
 
-        [Column("PROPOSED_STORIES")]
-        public int? ProposedStories { get; set; }
+        [Column("Proposed No# of Stories")]
+        public double? ProposedNoOfStories { get; set; }
 
-        [Column("EXISTING_ZONING_SQFT", TypeName = "decimal(18,2)")]
-        public decimal? ExistingZoningSquareFeet { get; set; }
 
-        [Column("PROPOSED_ZONING_SQFT", TypeName = "decimal(18,2)")]
-        public decimal? ProposedZoningSquareFeet { get; set; }
+        [Column("Existing Zoning Sqft")]
+        public double? ExistingZoningSqft { get; set; }
 
-        [Column("HORIZONTAL_ENLRGMT", TypeName = "decimal(18,2)")]
-        public decimal? HorizontalEnlargement { get; set; }
+        [Column("Proposed Zoning Sqft")]
+        public double? ProposedZoningSqft { get; set; }
 
-        [Column("VERTICAL_ENLRGMT", TypeName = "decimal(18,2)")]
-        public decimal? VerticalEnlargement { get; set; }
+        [Column("Horizontal Enlrgmt")]
+        [StringLength(255)]
+        public string? HorizontalEnlrgmt { get; set; }
 
-        [Column("ENLARGEMENT_SQFT", TypeName = "decimal(18,2)")]
-        public decimal? EnlargementSquareFeet { get; set; }
+        [Column("Vertical Enlrgmt")]
+        [StringLength(255)]
+        public string? VerticalEnlrgmt { get; set; }
 
-        [Column("OWNER_TYPE")]
+        [Column("Enlargement SQ Footage")]
+        public double? EnlargementSqFootage { get; set; }
+
+        [Column("Owner Type")]
+        [StringLength(255)]
         public string? OwnerType { get; set; }
 
-        [Column("OWNER_NAME")]
-        public string? OwnerName { get; set; }
+        [Column("Owner's First Name")]
+        [StringLength(255)]
+        public string? OwnerSFirstName { get; set; }
 
-        [Column("OWNER_BUSINESS")]
-        public string? OwnerBusiness { get; set; }
+        [Column("Owner's Last Name")]
+        [StringLength(255)]
+        public string? OwnerSLastName { get; set; }
 
-        [Column("OWNER_HOUSE_STREET")]
-        public string? OwnerHouseStreet { get; set; }
+        [Column("Owner's Business Name")]
+        [StringLength(255)]
+        public string? OwnerSBusinessName { get; set; }
 
-        [Column("CITY_STATE_ZIP")]
-        public string? CityStateZip { get; set; }
+        [Column("Owner's House Number")]
+        [StringLength(255)]
+        public string? OwnerSHouseNumber { get; set; }
+
+        [Column("Owner'sHouse Street Name")]
+        [StringLength(255)]
+        public string? OwnerSHouseStreetName { get; set; }
+
+        [Column("Owner'sPhone #")]
+        public double? OwnerSPhone { get; set; }
+
     }
 }

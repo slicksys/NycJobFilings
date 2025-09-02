@@ -1,1 +1,98 @@
-[{"UserId":"demo-user","FieldName":"JobS1No","Visible":true,"DisplayOrder":0,"Pinned":true,"Width":150},{"UserId":"demo-user","FieldName":"Borough","Visible":true,"DisplayOrder":1,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"HouseNo","Visible":true,"DisplayOrder":2,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"StreetName","Visible":true,"DisplayOrder":3,"Pinned":true,"Width":150},{"UserId":"demo-user","FieldName":"Block","Visible":true,"DisplayOrder":4,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"Lot","Visible":true,"DisplayOrder":5,"Pinned":true,"Width":150},{"UserId":"demo-user","FieldName":"JobType","Visible":true,"DisplayOrder":6,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"JobStatus","Visible":true,"DisplayOrder":7,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"LatestActionDate","Visible":true,"DisplayOrder":8,"Pinned":true,"Width":150},{"UserId":"demo-user","FieldName":"FilingDate","Visible":true,"DisplayOrder":9,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"InitialCost","Visible":true,"DisplayOrder":10,"Pinned":false,"Width":150},{"UserId":"demo-user","FieldName":"ProposedDwellingUnits","Visible":true,"DisplayOrder":11,"Pinned":false,"Width":150}]
+[
+    {
+        "UserId": "demo-user",
+        "FieldName": "JobS1No",
+        "Visible": true,
+        "DisplayOrder": 0,
+        "Pinned": true,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "Borough",
+        "Visible": true,
+        "DisplayOrder": 1,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "HouseNo",
+        "Visible": true,
+        "DisplayOrder": 2,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "StreetName",
+        "Visible": true,
+        "DisplayOrder": 3,
+        "Pinned": true,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "Block",
+        "Visible": true,
+        "DisplayOrder": 4,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "Lot",
+        "Visible": true,
+        "DisplayOrder": 5,
+        "Pinned": true,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "JobType",
+        "Visible": true,
+        "DisplayOrder": 6,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "JobStatus",
+        "Visible": true,
+        "DisplayOrder": 7,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "LatestActionDate",
+        "Visible": true,
+        "DisplayOrder": 8,
+        "Pinned": true,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "PreFilingDate",
+        "Visible": true,
+        "DisplayOrder": 9,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "InitialCost",
+        "Visible": true,
+        "DisplayOrder": 10,
+        "Pinned": false,
+        "Width": 150
+    },
+    {
+        "UserId": "demo-user",
+        "FieldName": "ProposedDwellingUnits",
+        "Visible": true,
+        "DisplayOrder": 11,
+        "Pinned": false,
+        "Width": 150
+    }
+]
